@@ -2,6 +2,10 @@ import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import config from "./config";
+import { prisma } from "./lib/prisma";
+import httpStatus from "http-status";
+import bcrypt from "bcryptjs";
+import { userRoutes } from "./modules/user/user.route";
 
 const app: Application = express();
 
@@ -15,8 +19,13 @@ app.use(
   }),
 );
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/", async (req: Request, res: Response) => {
+  const user = await prisma.user.findMany();
+  console.log(user);
   res.send("hello world");
 });
+
+
+app.use("/api/users", userRoutes);
 
 export default app;
